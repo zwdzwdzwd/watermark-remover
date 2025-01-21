@@ -58,8 +58,7 @@ export default {
       formData.append('file', file)
 
       try {
-        // 使用新部署的 Workers API 地址
-        const response = await axios.post('https://watermark-api.wade-1f2.workers.dev', formData, {
+        const response = await axios.post('https://watermark-api.wade-1f2.workers.dev/process', formData, {
           responseType: 'blob',
           headers: {
             'Content-Type': 'multipart/form-data'
