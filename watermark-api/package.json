@@ -50,6 +50,7 @@
     "hasown": "^2.0.2",
     "is-core-module": "^2.16.1",
     "itty-time": "^1.0.6",
+    "jimp": "^1.6.0",
     "loupe": "^3.1.2",
     "magic-string": "^0.30.17",
     "mime": "^3.0.0",

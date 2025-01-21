@@ -10,12 +10,10 @@
 
 export default {
   async fetch(request, env) {
-    // 处理 CORS 预检请求
     if (request.method === 'OPTIONS') {
       return handleOptions(request)
     }
 
-    // 处理文件上传请求
     if (request.method === 'POST' && new URL(request.url).pathname === '/process') {
       return handleProcess(request)
     }
@@ -26,7 +24,6 @@ export default {
   }
 }
 
-// CORS 头部配置
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -39,27 +36,38 @@ async function handleProcess(request) {
     const file = formData.get('file')
     
     if (!file) {
-      return new Response('No file uploaded', { 
-        status: 400,
-        headers: corsHeaders
+      return new Response('No file uploaded', { status: 400, headers: corsHeaders })
+    }
+
+    const fileData = await file.arrayBuffer()
+    const fileType = file.type
+
+    // 处理图片文件
+    if (fileType.startsWith('image/')) {
+      // 直接返回原始图片作为测试
+      return new Response(fileData, {
+        headers: {
+          ...corsHeaders,
+          'Content-Type': fileType,
+          'Content-Disposition': `attachment; filename="processed_${file.name}"`
+        }
       })
     }
 
-    // TODO: 实现文件处理逻辑
-    // 目前返回测试响应
-    return new Response('File processed successfully', {
-      headers: corsHeaders
+    // 其他文件类型暂时返回原文件
+    return new Response(fileData, {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': fileType,
+        'Content-Disposition': `attachment; filename="processed_${file.name}"`
+      }
     })
   } catch (err) {
-    return new Response(`Error: ${err.message}`, { 
-      status: 500,
-      headers: corsHeaders
-    })
+    console.error('Error:', err)
+    return new Response(`Error: ${err.message}`, { status: 500, headers: corsHeaders })
   }
 }
 
 function handleOptions(request) {
-  return new Response(null, {
-    headers: corsHeaders
-  })
+  return new Response(null, { headers: corsHeaders })
 }
