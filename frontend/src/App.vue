@@ -58,15 +58,12 @@ export default {
       formData.append('file', file)
 
       try {
-        const response = await axios.post('http://127.0.0.1:8080/process', formData, {
+        // 使用新部署的 Workers API 地址
+        const response = await axios.post('https://watermark-api.wade-1f2.workers.dev', formData, {
           responseType: 'blob',
-          timeout: 300000, // 设置超时时间为5分钟
           headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          withCredentials: false,
-          maxContentLength: Infinity,
-          maxBodyLength: Infinity
+            'Content-Type': 'multipart/form-data'
+          }
         })
         
         const url = window.URL.createObjectURL(new Blob([response.data]))
